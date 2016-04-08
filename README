@@ -1,0 +1,8 @@
+This project aims to automate the processing of the Standing order payments into the Sailing Club Manager program.
+
+To use it:
+1. Download the bank statement as CSV. Sort by narative1(A-Z), then by Date(oldest to newest)
+2. ruby ./readfile.rb BANKFILE invoice_lookup [no_proxy]
+
+Still to do:
+1. Automate generation of the invoice_lookup. This is difficult as there is no direct match of the bank narative1 to GBSC account.
