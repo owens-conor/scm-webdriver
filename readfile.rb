@@ -10,7 +10,8 @@ useproxy = true
 
 transactions_file = ARGV[0]
 invoice_lookup_file = ARGV[1]
-if ARGV.count > 2
+account = ARGV[2]
+if ARGV.count > 3
   useproxy = false
 end
 
@@ -94,18 +95,20 @@ current_n1 = "SOMECRAPHERE"
 alreadypaid = {}
 alreadypaid["AA"] = "AA"
 File.foreach(transactions_file) do |txn|
+  #log txn
   next unless txn =~ /^985750/
-  next unless txn =~ /AINE NOLAN/
+  next unless ((txn.include? "#{account}") or (account =~ /^ALL$/ ))
   values = txn.split(/,/)
   txndate = values[9].to_s
   txnn1 = values[10].to_s
   txncredit = values[17].chomp.to_s
+  next unless txncredit =~ /[0-9]+/
   # If txncredit doesn't end with '.00' then add it. Some bank files do, some bank files don't.
   if ! txncredit =~ /.*\.00$/
     txncredit = txncredit + ".00"
   end
   webtxndate = Date.strptime("#{txndate}", '%d/%m/%Y').strftime("%-e %b %Y")
-  debug "date #{txndate} n1 #{txnn1} credit #{txncredit} webtxndate #{webtxndate}"
+  log "date #{txndate} n1 #{txnn1} credit #{txncredit} webtxndate #{webtxndate}"
 
   ## Move on if this n1 not in invoice lookup
   if invoice_lookup.has_key?(txnn1)
